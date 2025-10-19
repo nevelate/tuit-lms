@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:tuit_lms/tuit_lms.dart';
+
+import 'test_point.dart';
 
 part 'final.g.dart';
 
@@ -19,11 +20,11 @@ class Final {
   @JsonKey(name: 'date', fromJson: DateTime.parse)
   final DateTime examDate;
 
-  @JsonKey(name: 'from', fromJson: DateTime.parse)
-  final DateTime startTime;
+  @JsonKey(name: 'from')
+  final String startTime;
 
-  @JsonKey(name: 'to', fromJson: DateTime.parse)
-  final DateTime endTime;
+  @JsonKey(name: 'to')
+  final String endTime;
 
   @JsonKey(name: 'final_limit')
   final int timeLimit;

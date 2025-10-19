@@ -1,5 +1,5 @@
-import 'package:tuit_lms/src/enums.dart';
-import 'package:tuit_lms/src/models/attachment.dart';
+import '../enums.dart';
+import 'attachment.dart';
 
 class Lesson {
   String? themeTitle;

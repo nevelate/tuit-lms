@@ -20,9 +20,9 @@ class Information {
 
   final String? stipend;
 
-  Information(
+  Information({
     this.fullName,
-    this.birthDate,
+    required this.birthDate,
     this.gender,
     this.studentNumber,
     this.group,
@@ -34,7 +34,7 @@ class Information {
     this.studyLanguage,
     this.degree,
     this.typeOfStudy,
-    this.year,
+    required this.year,
     this.stipend,
-  );
+});
 }

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'code_gen/absence.g.dart';
+part 'absence.g.dart';
 
 @JsonSerializable()
 class Absence {
@@ -30,10 +30,6 @@ class Absence {
     this.themeNumber,
   );
 
-  /// Factory for JSON deserialization
   factory Absence.fromJson(Map<String, dynamic> json) =>
       _$AbsenceFromJson(json);
-
-  /// Method for JSON serialization
-  Map<String, dynamic> toJson() => _$AbsenceToJson(this);
 }

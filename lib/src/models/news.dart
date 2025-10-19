@@ -3,9 +3,9 @@ class News {
   String? description;
   DateTime newsDate;
 
-  News(
+  News({
     this.title,
     this.description,
-    this.newsDate
-  );
+    required this.newsDate
+});
 }

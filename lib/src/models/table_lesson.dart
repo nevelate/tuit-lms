@@ -1,11 +1,11 @@
-import 'package:tuit_lms/src/enums.dart';
+import '../enums.dart';
 
 class TableLesson {
   final DateTime startTime;
   final String? subject;
   final String? stream;
   final String? room;
-  final int lessonDay; // store as weekday number (1=Mon ... 7=Sun)
+  final int lessonDay;
   final TableLessonType tableLessonType;
   final LessonType lessonType;
 
