@@ -10,4 +10,9 @@ class TestPoint{
       json['point'] as int,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'number': testNumber,
+        'point': point,
+      };
 }

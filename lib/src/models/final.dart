@@ -46,4 +46,6 @@ class Final {
   );
 
   factory Final.fromJson(Map<String, dynamic> json) => _$FinalFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FinalToJson(this);
 }

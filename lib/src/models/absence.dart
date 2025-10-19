@@ -32,4 +32,6 @@ class Absence {
 
   factory Absence.fromJson(Map<String, dynamic> json) =>
       _$AbsenceFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AbsenceToJson(this);
 }
