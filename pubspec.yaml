@@ -8,9 +8,13 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  cookie_jar: ^4.0.8
   dio: ^5.9.0
+  dio_cache_interceptor: ^4.0.5
+  dio_cookie_manager: ^3.3.0
   html: ^0.15.6
   json_annotation: ^4.9.0
+  native_dio_adapter: ^1.5.0
   # path: ^1.9.0
 
 dev_dependencies:
