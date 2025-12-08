@@ -44,13 +44,13 @@ class Course {
 
     return Course(
       json['id'] as int,
-      json['subject'] as String?,
+      (json['subject'] as String?)?.replaceAll("&#039;", "'"),
       json['subject_id'] as int,
       json['attendance'] as int,
       streams,
       lessonTypes,
       teachers,
-      json['failed'] as bool,
+      json['failed'] == null ? json['falied'] as bool : json['failed'] as bool,
     );
   }
 

@@ -4,7 +4,7 @@ class TestPoint{
 
   TestPoint(this.testNumber, this.point);
 
-  factory TestPoint.fromJson(Map<String, dynamic> json) {
+  factory TestPoint.fromJson(dynamic json) {
     return TestPoint(
       json['number'] as int,
       json['point'] as int,

@@ -1,6 +1,9 @@
+import 'package:tuit_lms/src/enums.dart';
+
 import 'attachment.dart';
 
 class Assignment{
+  String? taskType;
   String? teacher;
 
   String? taskName;

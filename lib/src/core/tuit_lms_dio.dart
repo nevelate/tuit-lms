@@ -6,12 +6,14 @@ import 'package:native_dio_adapter/native_dio_adapter.dart';
 
 class TuitLmsDio {
   static Dio create() {
-    final cookieJar = CookieJar();
+    final cookieJar = PersistCookieJar();
 
     final baseOptions = BaseOptions(
       baseUrl: 'https://lms.tuit.uz',
-      connectTimeout: Duration(seconds: 5),
-      receiveTimeout: Duration(seconds: 3),
+      connectTimeout: Duration(seconds: 15),
+      receiveTimeout: Duration(seconds: 5),
+      followRedirects: false,
+      validateStatus: (status) => status != null && status < 400,
     );
 
     final cacheOptions = CacheOptions(

@@ -4,5 +4,5 @@ class Discipline {
   final int creditCount;
   final int? grade;
 
-  Discipline(this.title, this.semester, this.creditCount, this.grade);
+  Discipline({this.title, this.semester, required this.creditCount, this.grade});
 }

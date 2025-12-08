@@ -1,8 +1,6 @@
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'absence.g.dart';
-
-@JsonSerializable()
 class Absence {
   final String? subject;
 
@@ -30,8 +28,21 @@ class Absence {
     this.themeNumber,
   );
 
-  factory Absence.fromJson(Map<String, dynamic> json) =>
-      _$AbsenceFromJson(json);
+  factory Absence.fromJson(Map<String, dynamic> json) => Absence(
+    (json['subject'] as String?)?.replaceAll("&#039;", "'"),
+    (json['subject_id'] as num).toInt(),
+    DateFormat('dd-MM-yyyy').parse(json['date'] as String),
+    json['type'] as String?,
+    json['calendar'] as String?,
+    (json['theme_number'] as num).toInt(),
+  );
 
-  Map<String, dynamic> toJson() => _$AbsenceToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'subject': subject,
+    'subject_id': subjectId,
+    'date': date.toIso8601String(),
+    'type': lessonType,
+    'calendar': themeTitle,
+    'theme_number': themeNumber,
+  };
 }

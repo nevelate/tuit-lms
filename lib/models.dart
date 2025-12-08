@@ -8,5 +8,6 @@ export 'src/models/final.dart';
 export 'src/models/information.dart';
 export 'src/models/lesson.dart';
 export 'src/models/news.dart';
+export 'src/models/semester.dart';
 export 'src/models/table_lesson.dart';
 export 'src/models/test_point.dart';

@@ -1,10 +1,10 @@
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'test_point.dart';
 
-part 'final.g.dart';
-
-@JsonSerializable()
 class Final {
   final String? subject;
 
@@ -45,7 +45,31 @@ class Final {
     this.testPoints,
   );
 
-  factory Final.fromJson(Map<String, dynamic> json) => _$FinalFromJson(json);
+  factory Final.fromJson(Map<String, dynamic> json) => Final(
+    (json['subject'] as String?)?.replaceAll("&#039;", "'"),
+    (json['subject_id'] as num).toInt(),
+    (json['f_grade'] as num?)?.toInt(),
+    json['stream'] as String?,
+    json['room'] as String?,
+    DateFormat('dd-MM-yyyy').parse(json['date'] as String),
+    json['from'] as String,
+    json['to'] as String,
+    (json['final_limit'] as num).toInt(),
+    (jsonDecode(json['final_info']) as List<dynamic>)
+        .map((e) => TestPoint.fromJson(e))
+        .toList(),
+  );
 
-  Map<String, dynamic> toJson() => _$FinalToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'subject': subject,
+    'subject_id': subjectId,
+    'f_grade': grade,
+    'stream': stream,
+    'room': room,
+    'date': examDate.toIso8601String(),
+    'from': startTime,
+    'to': endTime,
+    'final_limit': timeLimit,
+    'final_info': testPoints,
+  };
 }

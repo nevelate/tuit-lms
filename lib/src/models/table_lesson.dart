@@ -44,6 +44,7 @@ class TableLesson {
     String? subject = _subjectRegex.firstMatch(title)?.group(0)
         ?.replaceAll(')', '')
         .replaceAll('-', '')
+        .replaceAll("&#039;", "'")
         .trim();
 
     String? stream = _streamRegex.firstMatch(title)?.group(0);
