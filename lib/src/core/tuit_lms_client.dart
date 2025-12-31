@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
@@ -37,12 +39,56 @@ class TuitLmsClient {
   };
 
   final Dio _dio;
-  final AuthManager _authManager;
+  final CacheOptions _cacheOptions;
 
-  TuitLmsClient(this._dio, this._authManager);
+  TuitLmsClient(this._dio, this._cacheOptions);
 
-  Future<Information> getInformation() async {
-    final document = await _dio.getHtml('/student/info');
+  Future<bool> loginAsync({
+    required String login,
+    required String password,
+    required String token,
+    required String grecaptcha,
+  }) async {
+    final String loginRequest =
+        '_token=$token&login=$login&password=$password&g-recaptcha-response=$grecaptcha';
+
+    var response = await _dio.request(
+      '/auth/login',
+      data: loginRequest,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        method: 'POST',
+      ),
+    );
+
+    final redirectUrl = response.headers.value("location");
+    final redirectedResponse = await _dio.get(redirectUrl!);
+
+    return redirectedResponse.data.toString().contains('Dashboard');
+  }
+
+  Future<bool> isAuthorized() async {
+    var cookieJar =
+        (_dio.interceptors.firstWhere((i) => i is CookieManager)
+                as CookieManager)
+            .cookieJar;
+
+    var cookies = await cookieJar.loadForRequest(
+      Uri.parse("https://lms.tuit.uz"),
+    );
+
+    return cookies.isNotEmpty;
+  }
+
+  Future<Information> getInformation({bool refresh = false}) async {
+    final document = refresh
+        ? await _dio.getHtml(
+            '/student/info',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          )
+        : await _dio.getHtml('/student/info');
 
     final information = Information(
       fullName: document
@@ -116,10 +162,17 @@ class TuitLmsClient {
     return information;
   }
 
-  Future<List<News>> getNews({int page = 1}) async {
+  Future<List<News>> getNews({int page = 1, bool refresh = false}) async {
     var newsUrl = page == 1 ? '/dashboard/news' : '/dashboard/news?page=$page';
 
-    final document = await _dio.getHtml(newsUrl);
+    final document = refresh
+        ? await _dio.getHtml(
+            newsUrl,
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          )
+        : await _dio.getHtml(newsUrl);
 
     var news = List<News>.empty(growable: true);
     var tasks = List<Future<Document>>.empty(growable: true);
@@ -152,8 +205,15 @@ class TuitLmsClient {
     return news;
   }
 
-  Future<List<Discipline>> getDIsciplines() async {
-    final document = await _dio.getHtml('/student/study-plan');
+  Future<List<Discipline>> getDIsciplines({bool refresh = false}) async {
+    final document = refresh
+        ? await _dio.getHtml(
+            '/student/study-plan',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          )
+        : await _dio.getHtml('/student/study-plan');
 
     final disciplines = List<Discipline>.empty(growable: true);
 
@@ -178,9 +238,21 @@ class TuitLmsClient {
     return disciplines;
   }
 
-  Future<List<Lesson>> getLessons(int courseId, LessonType lessonType) async {
+  Future<List<Lesson>> getLessons(
+    int courseId,
+    LessonType lessonType, {
+    bool refresh = false,
+  }) async {
     final dateRegex = RegExp(r"\(.*\)");
-    final document = await _dio.getHtml('/student/calendar/$courseId');
+
+    final document = refresh
+        ? await _dio.getHtml(
+            '/student/calendar/$courseId',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          )
+        : await _dio.getHtml('/student/calendar/$courseId');
 
     final lessons = List<Lesson>.empty(growable: true);
 
@@ -222,8 +294,18 @@ class TuitLmsClient {
     return lessons;
   }
 
-  Future<AssignmentsPage?> getAssignmentsPage(int courseId) async {
-    final document = await _dio.getHtml('/student/my-courses/show/$courseId');
+  Future<AssignmentsPage?> getAssignmentsPage(
+    int courseId, {
+    bool refresh = false,
+  }) async {
+    final document = refresh
+        ? await _dio.getHtml(
+            '/student/my-courses/show/$courseId',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          )
+        : await _dio.getHtml('/student/my-courses/show/$courseId');
 
     if (document.querySelector('div.page-inner > div.panel') == null) {
       return null;
@@ -307,8 +389,16 @@ class TuitLmsClient {
     return assignmentsPage;
   }
 
-  Future<List<Semester>> getSemesters() async {
-    final document = await _dio.getHtml('/student/my-courses');
+  Future<List<Semester>> getSemesters({bool refresh = false}) async {
+    final document = refresh
+        ? await _dio.getHtml(
+            '/student/my-courses',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          )
+        : await _dio.getHtml('/student/my-courses');
+
     var semesters = List<Semester>.empty(growable: true);
 
     for (var option in document.querySelectorAll('select.js-semester option')) {
@@ -323,10 +413,18 @@ class TuitLmsClient {
     return semesters;
   }
 
-  Future<List<Course>> getCourses(int semesterId) async {
-    final response = await _dio.get(
-      '/student/my-courses/data?semester_id=$semesterId',
-    );
+  Future<List<Course>> getCourses(
+    int semesterId, {
+    bool refresh = false,
+  }) async {
+    final response = refresh
+        ? await _dio.get('/student/my-courses/data?semester_id=$semesterId')
+        : await _dio.get(
+            '/student/my-courses/data?semester_id=$semesterId',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          );
 
     var list = List<Course>.empty(growable: true);
 
@@ -337,10 +435,18 @@ class TuitLmsClient {
     return list;
   }
 
-  Future<List<Absence>> getAbsences(int semesterId) async {
-    final response = await _dio.get(
-      '/student/attendance/data?semester_id=$semesterId',
-    );
+  Future<List<Absence>> getAbsences(
+    int semesterId, {
+    bool refresh = false,
+  }) async {
+    final response = refresh
+        ? await _dio.get('/student/attendance/data?semester_id=$semesterId')
+        : await _dio.get(
+            '/student/attendance/data?semester_id=$semesterId',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          );
 
     var list = List<Absence>.empty(growable: true);
 
@@ -351,8 +457,18 @@ class TuitLmsClient {
     return list;
   }
 
-  Future<List<TableLesson>> getSchedule(int semesterId) async {
-    final response = await _dio.get('/student/schedule/load/$semesterId');
+  Future<List<TableLesson>> getSchedule(
+    int semesterId, {
+    bool refresh = false,
+  }) async {
+    final response = refresh
+        ? await _dio.get('/student/schedule/load/$semesterId')
+        : await _dio.get(
+            '/student/schedule/load/$semesterId',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          );
 
     var list = List<TableLesson>.empty(growable: true);
 
@@ -363,10 +479,15 @@ class TuitLmsClient {
     return list;
   }
 
-  Future<List<Final>> getFinals(int semesterId) async {
-    final response = await _dio.get(
-      '/student/finals/data?semester_id=$semesterId',
-    );
+  Future<List<Final>> getFinals(int semesterId, {bool refresh = false}) async {
+    final response = refresh
+        ? await _dio.get('/student/finals/data?semester_id=$semesterId')
+        : await _dio.get(
+            '/student/finals/data?semester_id=$semesterId',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          );
 
     var list = List<Final>.empty(growable: true);
 
@@ -379,22 +500,30 @@ class TuitLmsClient {
 
   // Upload
 
-  Future<String> getAccountFullName() async {
-    final document = await _dio.getHtml('/dashboard/news');
+  Future<String> getAccountFullName({bool refresh = false}) async {
+    final document = refresh
+        ? await _dio.getHtml(
+            '/dashboard/news',
+            options: _cacheOptions
+                .copyWith(policy: CachePolicy.refresh)
+                .toOptions(),
+          )
+        : await _dio.getHtml('/dashboard/news');
 
     return document.querySelector('ul.dropdown-menu > li > div')!.text.trim();
   }
 
   Future<TableLessonType> getLessonSide(
-    int semesterId, [
+    int semesterId, {
     TableLessonType firstWeekTableLessonSide = TableLessonType.left,
-  ]) async {
-    final courses = await getCourses(semesterId);
+    bool refresh = false,
+  }) async {
+    final courses = await getCourses(semesterId, refresh: refresh);
     var index = 0;
     var lessons = List<Lesson>.empty(growable: true);
 
     do {
-      lessons = await getLessons(courses[index].id, LessonType.lecture);
+      lessons = await getLessons(courses[index].id, LessonType.lecture, refresh: refresh);
     } while (++index < courses.length && lessons.isEmpty);
 
     DateTime firstLessonDate;

@@ -33,14 +33,14 @@ extension DoubleParsing on String {
 }
 
 extension GetHTML on Dio {
-  Future<Document> getHtml(String path) async {
+  Future<Document> getHtml(String path, {Options? options}) async {
     Dio dio = this;
-    final response = await dio.get(path);
+    final response = await dio.get(path, options: options);
     return parse(response.data);
   }
 }
 
-extension GetWeek on DateTime{
+extension GetWeek on DateTime {
   int weekNumber() {
     // Monday = first day
     final firstDayOfYear = DateTime(year, 1, 1);
