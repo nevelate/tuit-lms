@@ -313,18 +313,13 @@ class TuitLmsClient {
 
     var assignmentsPage = AssignmentsPage()
       ..achievedPoints = double.parse(
-        document
-            .querySelectorAll('tbody tr td h4')[0]
-            .text,
+        document.querySelectorAll('tbody tr td h4')[0].text,
       )
       ..maxPoints = double.parse(
         document.querySelectorAll('tbody tr td h4')[1].text,
       )
       ..rating = double.parse(
-        document
-            .querySelectorAll('tbody tr td h4')[2]
-            .text
-            .replaceAll("%", ""),
+        document.querySelectorAll('tbody tr td h4')[2].text.replaceAll("%", ""),
       )
       ..grade = int.parse(document.querySelectorAll('tbody tr td h4')[3].text);
 
@@ -338,20 +333,16 @@ class TuitLmsClient {
         ..deadline = DateFormat(
           'dd-MM-yyyy H:m:s',
         ).parse(tr.querySelectorAll('td')[3].text)
-        ..currentGrade = tr
-            .querySelectorAll('td.text-center div button')[0]
-            .text
-            .parseOrReturnNull()
+        ..currentGrade = double.tryParse(
+          tr.querySelectorAll('td.text-center div button')[0].text,
+        )
         ..maxGrade = double.parse(
           tr.querySelectorAll('td.text-center div button')[1].text,
         );
 
       if (!tr.querySelector('td div a')!.text.isNullOrWhiteSpace()) {
         assignment.taskFile = Attachment()
-          ..name = tr
-              .querySelector('td div a')
-              ?.text
-              .trim()
+          ..name = tr.querySelector('td div a')?.text.trim()
           ..url = tr.querySelector('td div a')?.attributes['href'];
       }
 
@@ -368,10 +359,7 @@ class TuitLmsClient {
               ?.toInt();
 
           assignment.uploadedFile = Attachment()
-            ..name = tr
-                .querySelector('td > a')!
-                .text
-                .trim()
+            ..name = tr.querySelector('td > a')!.text.trim()
             ..url = tr.querySelector('td > a')!.attributes['href'];
         }
       }
@@ -519,7 +507,11 @@ class TuitLmsClient {
     var lessons = List<Lesson>.empty(growable: true);
 
     do {
-      lessons = await getLessons(courses[index].id, LessonType.lecture, refresh: refresh);
+      lessons = await getLessons(
+        courses[index].id,
+        LessonType.lecture,
+        refresh: refresh,
+      );
     } while (++index < courses.length && lessons.isEmpty);
 
     DateTime firstLessonDate;
