@@ -364,8 +364,8 @@ class TuitLmsClient {
           );
         } else {
           assignment.uploadId = tr
-              .querySelector('td div button.js-btn-upload')!
-              .attributes['data-id']
+              .querySelector('td div button.js-btn-upload')
+              ?.attributes['data-id']
               ?.parseOrReturnNull()
               ?.toInt();
 
