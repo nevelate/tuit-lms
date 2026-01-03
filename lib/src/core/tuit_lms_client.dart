@@ -354,7 +354,6 @@ class TuitLmsClient {
               .querySelector('td div a')
               ?.text
               .trim()
-              .removeFileExtension()
           ..url = tr.querySelector('td div a')?.attributes['href'];
       }
 
