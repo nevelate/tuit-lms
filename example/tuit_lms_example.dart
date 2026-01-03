@@ -48,7 +48,7 @@ Future<void> main() async {
     );
   }
 
-  var news = await tuitLmsClient.getNews();
+  var assignmentsPage = await tuitLmsClient.getAssignmentsPage(19784);
 
   print('yay!');
 }

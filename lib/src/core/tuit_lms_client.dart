@@ -315,8 +315,7 @@ class TuitLmsClient {
       ..achievedPoints = double.parse(
         document
             .querySelectorAll('tbody tr td h4')[0]
-            .text
-            .replaceAll('.', ','),
+            .text,
       )
       ..maxPoints = double.parse(
         document.querySelectorAll('tbody tr td h4')[1].text,
@@ -325,8 +324,7 @@ class TuitLmsClient {
         document
             .querySelectorAll('tbody tr td h4')[2]
             .text
-            .replaceAll("%", "")
-            .replaceAll('.', ','),
+            .replaceAll("%", ""),
       )
       ..grade = int.parse(document.querySelectorAll('tbody tr td h4')[3].text);
 
@@ -374,7 +372,6 @@ class TuitLmsClient {
                 .querySelector('td > a')!
                 .text
                 .trim()
-                .removeFileExtension()
             ..url = tr.querySelector('td > a')!.attributes['href'];
         }
       }
