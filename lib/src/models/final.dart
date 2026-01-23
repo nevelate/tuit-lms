@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:tuit_lms/tuit_lms.dart';
 
 import 'test_point.dart';
 
@@ -48,7 +49,7 @@ class Final {
   factory Final.fromJson(Map<String, dynamic> json) => Final(
     (json['subject'] as String?)?.replaceAll("&#039;", "'"),
     (json['subject_id'] as num).toInt(),
-    (json['f_grade'] as num?)?.toInt(),
+    int.tryParse(json['f_grade'].toString()),
     json['stream'] as String?,
     json['room'] as String?,
     DateFormat('dd-MM-yyyy').parse(json['date'] as String),
