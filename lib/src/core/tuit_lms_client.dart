@@ -81,9 +81,13 @@ class TuitLmsClient {
   }
 
   void logOut() {
+    deleteCookies();
+    _cacheOptions.store?.clean();
+  }
+
+  void deleteCookies() {
     (_dio.interceptors.whereType<CookieManager>().firstOrNull)?.cookieJar
         .deleteAll();
-    _cacheOptions.store?.clean();
   }
 
   Future<Information> getInformation({bool refresh = false}) async {
