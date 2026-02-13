@@ -80,6 +80,12 @@ class TuitLmsClient {
     return cookies.isNotEmpty;
   }
 
+  void logOut() {
+    (_dio.interceptors.whereType<CookieManager>().firstOrNull)?.cookieJar
+        .deleteAll();
+    _cacheOptions.store?.clean();
+  }
+
   Future<Information> getInformation({bool refresh = false}) async {
     final document = refresh
         ? await _dio.getHtml(
