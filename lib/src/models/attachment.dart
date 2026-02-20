@@ -1,7 +1,11 @@
-class Attachment 
-{
+class Attachment {
   String? name;
   String? url;
 
-  late bool isFile;
+  bool get isFile {
+    if(name == null){
+      return false;
+    }
+    return name!.lastIndexOf('\\') < name!.lastIndexOf('.');
+  }
 }
