@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -492,7 +494,31 @@ class TuitLmsClient {
     return list;
   }
 
-  // Upload
+  Future<bool> uploadFile(String filePath, int courseId, int uploadId) async {
+    final document = await _dio.getHtml(
+      '/student/my-courses/show/$courseId',
+      options: _cacheOptions.copyWith(policy: CachePolicy.refresh).toOptions(),
+    );
+
+    final File file = File(filePath);
+
+    String fileName = file.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      'id': uploadId.toString(),
+      'file': await MultipartFile.fromFile(file.path, filename: fileName),
+    });
+
+    final csrfToken = document
+        .querySelector('meta[name="csrf-token"]')
+        ?.attributes['content'];
+
+    final response = await _dio.post(
+      '/student/my-courses/upload',
+      data: formData,
+      options: Options(headers: {'X-CSRF-TOKEN': csrfToken}),
+    );
+    return response.statusCode == 200;
+  }
 
   Future<String> getAccountFullName({bool refresh = false}) async {
     final document = refresh
