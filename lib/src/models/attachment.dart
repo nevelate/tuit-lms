@@ -6,6 +6,6 @@ class Attachment {
     if(name == null){
       return false;
     }
-    return name!.lastIndexOf('\\') < name!.lastIndexOf('.');
+    return name!.lastIndexOf('/') < name!.lastIndexOf('.');
   }
 }
