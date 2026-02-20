@@ -3,9 +3,9 @@ class Attachment {
   String? url;
 
   bool get isFile {
-    if(name == null){
+    if(url == null){
       return false;
     }
-    return name!.lastIndexOf('/') < name!.lastIndexOf('.');
+    return url!.lastIndexOf('/') < url!.lastIndexOf('.');
   }
 }
