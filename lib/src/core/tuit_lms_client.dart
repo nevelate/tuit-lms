@@ -494,9 +494,9 @@ class TuitLmsClient {
     return list;
   }
 
-  Future<bool> uploadFile(String filePath, int courseId, int uploadId) async {
+  Future<bool> uploadFile(String filePath, int uploadId) async {
     final document = await _dio.getHtml(
-      '/student/my-courses/show/$courseId',
+      '/dashboard/news',
       options: _cacheOptions.copyWith(policy: CachePolicy.refresh).toOptions(),
     );
 
