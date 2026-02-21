@@ -5,9 +5,12 @@ enum DataSource { network, cache }
 
 class DataState<T> {
   final T data;
-  final bool isFromCache;
+  final DataSource source;
+  final DateTime? lastUpdate;
 
-  const DataState({required this.data, required this.isFromCache});
+  const DataState({required this.data, required this.source, this.lastUpdate});
+
+  bool get isFromCache => source == DataSource.cache;
 
   static Future<DataState<T>> mapResponse<T>(
     Response response,
@@ -15,7 +18,7 @@ class DataState<T> {
     T data,
   ) async {
     if (store == null) {
-      return DataState(data: data, isFromCache: false);
+      return DataState(data: data, source: DataSource.network);
     }
 
     final key = response.extra[extraCacheKey];
@@ -24,6 +27,10 @@ class DataState<T> {
     bool isCached =
         cache != null &&
         DateTime.now().difference(cache.responseDate).inMinutes > 1;
-    return DataState(data: data, isFromCache: isCached);
+    return DataState(
+      data: data,
+      source: isCached ? DataSource.cache : DataSource.network,
+      lastUpdate: cache?.responseDate
+    );
   }
 }

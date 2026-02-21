@@ -174,7 +174,11 @@ class TuitLmsClient {
           .removeUpToColonAndTrim(),
     );
 
-    return DataState(data: information, isFromCache: response.isFromCache);
+    return DataState(
+      data: information,
+      source: response.source,
+      lastUpdate: response.lastUpdate,
+    );
   }
 
   Future<DataState<List<News>>> getNews({
@@ -222,7 +226,11 @@ class TuitLmsClient {
       );
     }
 
-    return DataState(data: news, isFromCache: response.isFromCache);
+    return DataState(
+      data: news,
+      source: response.source,
+      lastUpdate: response.lastUpdate,
+    );
   }
 
   Future<DataState<List<Discipline>>> getDIsciplines({
@@ -259,7 +267,11 @@ class TuitLmsClient {
       }
     }
 
-    return DataState(data: disciplines, isFromCache: response.isFromCache);
+    return DataState(
+      data: disciplines,
+      source: response.source,
+      lastUpdate: response.lastUpdate,
+    );
   }
 
   Future<DataState<List<Lesson>>> getLessons(
@@ -320,7 +332,11 @@ class TuitLmsClient {
       lessons.add(lesson);
     }
 
-    return DataState(data: lessons, isFromCache: response.isFromCache);
+    return DataState(
+      data: lessons,
+      source: response.source,
+      lastUpdate: response.lastUpdate,
+    );
   }
 
   Future<DataState<AssignmentsPage?>> getAssignmentsPage(
@@ -342,7 +358,11 @@ class TuitLmsClient {
     final document = response.data;
 
     if (document.querySelector('div.page-inner > div.panel') == null) {
-      return DataState(data: null, isFromCache: response.isFromCache);
+      return DataState(
+        data: null,
+        source: response.source,
+        lastUpdate: response.lastUpdate,
+      );
     }
 
     var assignmentsPage = AssignmentsPage()
@@ -404,7 +424,11 @@ class TuitLmsClient {
     }
     assignmentsPage.assignments = assignments;
 
-    return DataState(data: assignmentsPage, isFromCache: response.isFromCache);
+    return DataState(
+      data: assignmentsPage,
+      source: response.source,
+      lastUpdate: response.lastUpdate,
+    );
   }
 
   Future<DataState<List<Semester>>> getSemesters({bool refresh = false}) async {
@@ -430,7 +454,11 @@ class TuitLmsClient {
       );
     }
 
-    return DataState(data: semesters, isFromCache: response.isFromCache);
+    return DataState(
+      data: semesters,
+      source: response.source,
+      lastUpdate: response.lastUpdate,
+    );
   }
 
   Future<DataState<List<Course>>> getCourses(
