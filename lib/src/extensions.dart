@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
+import 'package:tuit_lms/tuit_lms.dart';
 
 extension Trimming on String {
   String removeUpToColonAndTrim() {
@@ -33,10 +35,10 @@ extension DoubleParsing on String {
 }
 
 extension GetHTML on Dio {
-  Future<Document> getHtml(String path, {Options? options}) async {
+  Future<DataState<Document>> getHtml(String path, CacheStore? store, {Options? options}) async {
     Dio dio = this;
     final response = await dio.get(path, options: options);
-    return parse(response.data);
+    return DataState.mapResponse(response, store, parse(response.data));
   }
 }
 

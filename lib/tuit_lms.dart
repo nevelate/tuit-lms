@@ -8,6 +8,7 @@ export 'models.dart';
 export 'src/languages.dart';
 export 'src/extensions.dart';
 export 'src/enums.dart';
+export 'src/data/data_state.dart';
 
 export 'src/core/tuit_lms_client.dart';
 
