@@ -11,3 +11,5 @@ export 'src/models/news.dart';
 export 'src/models/semester.dart';
 export 'src/models/table_lesson.dart';
 export 'src/models/test_point.dart';
+
+export 'src/data/data_state.dart';

@@ -26,7 +26,7 @@ class DataState<T> {
 
     bool isCached =
         cache != null &&
-        DateTime.now().difference(cache.responseDate).inMinutes > 1;
+        DateTime.now().difference(cache.responseDate).inSeconds > 15;
     return DataState(
       data: data,
       source: isCached ? DataSource.cache : DataSource.network,
