@@ -2,6 +2,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:http_cache_hive_store/http_cache_hive_store.dart';
 import 'package:native_dio_adapter/native_dio_adapter.dart';
 import 'package:tuit_lms/tuit_lms.dart';
 
@@ -19,8 +20,8 @@ Future<void> main() async {
   );
 
   final cacheOptions = CacheOptions(
-    store: MemCacheStore(),
-    policy: CachePolicy.request,
+    store: HiveCacheStore('.temp'),
+    policy: CachePolicy.forceCache,
     hitCacheOnErrorCodes: const [500],
     hitCacheOnNetworkFailure: true,
     maxStale: const Duration(days: 7),
@@ -49,6 +50,8 @@ Future<void> main() async {
   }
 
   var assignmentsPage = await tuitLmsClient.getAssignmentsPage(19784);
+
+  final finals = await tuitLmsClient.getFinals(49);
 
   print('yay!');
 }

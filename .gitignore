@@ -7,3 +7,5 @@
 pubspec.lock
 
 secrets.dart
+
+.temp/

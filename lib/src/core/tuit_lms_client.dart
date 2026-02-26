@@ -9,19 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:tuit_lms/tuit_lms.dart';
 
 class TuitLmsClient {
-  static const String _myCoursesUrl =
-      'https://lms.tuit.uz/student/my-courses/data?semester_id=';
-  static const String _finalsUrl =
-      'https://lms.tuit.uz/student/finals/data?semester_id=';
-  static const String _scheduleUrl =
-      'https://lms.tuit.uz/student/schedule/load/';
-  static const String _sbsencesUrl =
-      'https://lms.tuit.uz/student/attendance/data?semester_id=';
-
-  static const String _changeLanguageRequestFormat = '_token={0}&language={1}';
-  static const String _changePasswordRequestFormat =
-      '_token={0}&old_password={1}&password={2}&password_confirmation={3}';
-
   static const _uploadRequestHeaders = {
     'Accept': '*/*',
     'User-Agent':
@@ -64,7 +51,10 @@ class TuitLmsClient {
     );
 
     final redirectUrl = response.headers.value("location");
-    final redirectedResponse = await _dio.get(redirectUrl!);
+    final redirectedResponse = await _dio.get(
+      redirectUrl!,
+      options: _cacheOptions.copyWith(policy: CachePolicy.noCache).toOptions(),
+    );
 
     return redirectedResponse.data.toString().contains('Dashboard');
   }
@@ -98,7 +88,7 @@ class TuitLmsClient {
             '/student/info',
             _cacheOptions.store,
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.getHtml('/student/info', _cacheOptions.store);
@@ -192,7 +182,7 @@ class TuitLmsClient {
             newsUrl,
             _cacheOptions.store,
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.getHtml(newsUrl, _cacheOptions.store);
@@ -241,7 +231,7 @@ class TuitLmsClient {
             '/student/study-plan',
             _cacheOptions.store,
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.getHtml('/student/study-plan', _cacheOptions.store);
@@ -286,7 +276,7 @@ class TuitLmsClient {
             '/student/calendar/$courseId',
             _cacheOptions.store,
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.getHtml(
@@ -348,7 +338,7 @@ class TuitLmsClient {
             '/student/my-courses/show/$courseId',
             _cacheOptions.store,
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.getHtml(
@@ -437,7 +427,7 @@ class TuitLmsClient {
             '/student/my-courses',
             _cacheOptions.store,
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.getHtml('/student/my-courses', _cacheOptions.store);
@@ -469,7 +459,7 @@ class TuitLmsClient {
         ? await _dio.get(
             '/student/my-courses/data?semester_id=$semesterId',
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.get('/student/my-courses/data?semester_id=$semesterId');
@@ -491,7 +481,7 @@ class TuitLmsClient {
         ? await _dio.get(
             '/student/attendance/data?semester_id=$semesterId',
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.get('/student/attendance/data?semester_id=$semesterId');
@@ -513,7 +503,7 @@ class TuitLmsClient {
         ? await _dio.get(
             '/student/schedule/load/$semesterId',
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.get('/student/schedule/load/$semesterId');
@@ -535,7 +525,7 @@ class TuitLmsClient {
         ? await _dio.get(
             '/student/finals/data?semester_id=$semesterId',
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.get('/student/finals/data?semester_id=$semesterId');
@@ -553,7 +543,7 @@ class TuitLmsClient {
     final data = await _dio.getHtml(
       '/dashboard/news',
       _cacheOptions.store,
-      options: _cacheOptions.copyWith(policy: CachePolicy.refresh).toOptions(),
+      options: _cacheOptions.copyWith(policy: CachePolicy.refreshForceCache).toOptions(),
     );
 
     final document = data.data;
@@ -584,7 +574,7 @@ class TuitLmsClient {
             '/dashboard/news',
             _cacheOptions.store,
             options: _cacheOptions
-                .copyWith(policy: CachePolicy.refresh)
+                .copyWith(policy: CachePolicy.refreshForceCache)
                 .toOptions(),
           )
         : await _dio.getHtml('/dashboard/news', _cacheOptions.store);

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:html/dom.dart';
@@ -35,7 +37,11 @@ extension DoubleParsing on String {
 }
 
 extension GetHTML on Dio {
-  Future<DataState<Document>> getHtml(String path, CacheStore? store, {Options? options}) async {
+  Future<DataState<Document>> getHtml(
+    String path,
+    CacheStore? store, {
+    Options? options,
+  }) async {
     Dio dio = this;
     final response = await dio.get(path, options: options);
     return DataState.mapResponse(response, store, parse(response.data));
@@ -52,5 +58,19 @@ extension GetWeek on DateTime {
     int offset = (firstDayWeekday - DateTime.monday) % 7;
 
     return ((difference(firstDayOfYear).inDays + offset) ~/ 7) + 1;
+  }
+}
+
+extension GetJson on Response {
+  dynamic normalizeJson() {
+    final data = this.data;
+
+    // if cached → it's a String
+    if (data is String) {
+      return jsonDecode(data);
+    }
+
+    // if network → already decoded
+    return data;
   }
 }
