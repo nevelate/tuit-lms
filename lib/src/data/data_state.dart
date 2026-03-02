@@ -24,13 +24,11 @@ class DataState<T> {
     final key = response.extra[extraCacheKey];
     final cache = await store.get(key);
 
-    bool isCached =
-        cache != null &&
-        DateTime.now().difference(cache.responseDate).inSeconds > 15;
+    bool isCached = !response.extra[extraFromNetworkKey];
     return DataState(
       data: data,
       source: isCached ? DataSource.cache : DataSource.network,
-      lastUpdate: cache?.responseDate
+      lastUpdate: cache?.responseDate,
     );
   }
 }
