@@ -34,8 +34,29 @@ Future<void> main() async {
   final dio = Dio(baseOptions);
 
   dio.httpClientAdapter = NativeAdapter();
+  dio.interceptors.add(
+    InterceptorsWrapper(
+      onRequest: (RequestOptions options, handler) async {
+        final key = CacheOptions.defaultCacheKeyBuilder(
+          url: options.uri,
+          headers: options.getFlattenHeaders(),
+        );
+
+        final cache = await cacheOptions.store?.get(key);
+        if (cache != null &&
+            options.getCacheOptions()?.policy == CachePolicy.forceCache) {
+          var response = cache.toResponse(options, fromNetwork: false);
+          response.headers.removeAll('set-cookie');
+          return handler.resolve(response);
+        }
+
+        return handler.next(options);
+      },
+    ),
+  );
   dio.interceptors.add(CookieManager(cookieJar));
   dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+
   var tuitLmsClient = TuitLmsClient(dio, cacheOptions);
 
   if (!(await tuitLmsClient.isAuthorized())) {
