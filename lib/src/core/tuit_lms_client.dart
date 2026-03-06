@@ -56,6 +56,10 @@ class TuitLmsClient {
 
   void logOut() {
     deleteCookies();
+    deleteCache();
+  }
+
+  void deleteCache() {
     _cacheOptions.store?.clean();
   }
 
@@ -525,7 +529,9 @@ class TuitLmsClient {
     final data = await _dio.getHtml(
       '/dashboard/news',
       _cacheOptions.store,
-      options: _cacheOptions.copyWith(policy: CachePolicy.refreshForceCache).toOptions(),
+      options: _cacheOptions
+          .copyWith(policy: CachePolicy.refreshForceCache)
+          .toOptions(),
     );
 
     final document = data.data;
