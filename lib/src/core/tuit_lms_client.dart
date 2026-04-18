@@ -82,72 +82,52 @@ class TuitLmsClient {
     final document = response.data;
 
     final information = Information(
-      fullName: document
-          .querySelectorAll('div.card.relative p.m-b-xs')[0]
-          .text
-          .removeUpToColonAndTrim(),
+      fullName: document.querySelector('div.si-student-name')?.text,
+      studentNumber: document.querySelector('div.si-student-id')?.text,
+
       birthDate: DateFormat('dd-MM-yyyy').parse(
-        document
-            .querySelectorAll('div.card.relative p.m-b-xs')[1]
-            .text
-            .removeUpToColonAndTrim(),
+        document.querySelectorAll('div.si-field span.si-field-value')[0].text,
       ),
       gender: document
-          .querySelectorAll('div.card.relative p.m-b-xs')[2]
-          .text
-          .removeUpToColonAndTrim(),
-      studentNumber: document
-          .querySelectorAll('div.card.relative p.m-b-xs')[3]
-          .text
-          .removeUpToColonAndTrim(),
-
+          .querySelectorAll('div.si-field span.si-field-value')[1]
+          .text,
       address: document
-          .querySelectorAll('div.card.relative p.m-b-xs')[4]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelectorAll('div.si-field span.si-field-value')[2]
+          .text,
       temporaryAddress: document
-          .querySelectorAll('div.card.relative p')[6]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelectorAll('div.si-field span.si-field-value')[3]
+          .text,
 
       base64Photo: document
-          .querySelector('div.card.relative p.text-center.m-b-md img')
+          .querySelector('div.si-avatar-wrap img')
           ?.attributes['src'],
 
       specialization: document
-          .querySelectorAll('div.card:not(.relative) p.m-b-xs')[0]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelectorAll('div.si-info-item span.si-field-value')[0]
+          .text,
       studyLanguage: document
-          .querySelectorAll('div.card:not(.relative) p.m-b-xs')[1]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelectorAll('div.si-info-item span.si-field-value')[1]
+          .text,
       degree: document
-          .querySelectorAll('div.card:not(.relative) p.m-b-xs')[2]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelectorAll('div.si-info-item span.si-field-value')[2]
+          .text,
       typeOfStudy: document
-          .querySelectorAll('div.card:not(.relative) p.m-b-xs')[3]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelectorAll('div.si-info-item span.si-field-value')[3]
+          .text,
       year: int.parse(
         document
-            .querySelectorAll('div.card:not(.relative) p.m-b-xs')[4]
-            .text
-            .removeUpToColonAndTrim(),
+            .querySelectorAll('div.si-info-item span.si-field-value')[4]
+            .text,
       ),
       group: document
-          .querySelectorAll('div.card:not(.relative) p.m-b-xs')[5]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelectorAll('div.si-info-item span.si-field-value')[5]
+          .text,
       tutor: document
-          .querySelectorAll('div.card:not(.relative) p.m-b-xs')[6]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelectorAll('div.si-info-item span.si-field-value')[6]
+          .text,
       stipend: document
-          .querySelectorAll('div.card:not(.relative) p')[7]
-          .text
-          .removeUpToColonAndTrim(),
+          .querySelector('div.si-info-item span span')
+          ?.text.trim(),
     );
 
     return DataState(
@@ -209,7 +189,7 @@ class TuitLmsClient {
     );
   }
 
-  Future<DataState<List<Discipline>>> getDIsciplines({
+  Future<DataState<List<Discipline>>> getDisciplines({
     bool refresh = false,
   }) async {
     final response = refresh
@@ -355,7 +335,7 @@ class TuitLmsClient {
 
     var assignments = List<Assignment>.empty(growable: true);
 
-    for (var tr in document.querySelectorAll('table#simple-table1 tbody tr')) {
+    for (var tr in document.querySelectorAll('table#simple-table1 tbody tr:not(.criteria-row)')) {
       var assignment = Assignment()
         ..taskType = tr.querySelectorAll('td')[0].text
         ..teacher = tr.querySelectorAll('td')[1].text
